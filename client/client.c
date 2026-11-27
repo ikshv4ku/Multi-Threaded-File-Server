@@ -28,14 +28,24 @@ void print_help() {
     printf("------------------------------------------------------------\n");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     int sock;
     char buffer[BUFFER_SIZE] = {0};
 
+    // Server address: first CLI argument, else $SERVER_IP, else localhost.
+    const char *server_ip = "127.0.0.1";
+    const char *env_ip = getenv("SERVER_IP");
+    if (argc > 1) {
+        server_ip = argv[1];
+    } else if (env_ip != NULL && env_ip[0] != '\0') {
+        server_ip = env_ip;
+    }
+
     print_welcome();
+    printf("Connecting to %s:%d ...\n", server_ip, PORT);
 
     // Connect to server
-    sock = connect_to_server("172.24.9.252", PORT);
+    sock = connect_to_server(server_ip, PORT);
     if (sock < 0) {
         return -1;
     }

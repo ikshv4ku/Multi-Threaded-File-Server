@@ -16,4 +16,4 @@ make || { echo "[-] Build failed!"; exit 1; }
 echo "----------------------------------------------"
 echo "[*] Launching File Client..."
 cd client 
-./file_client
+./file_client "$@"

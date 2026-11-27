@@ -1,17 +1,34 @@
-# Multi-Threaded-File-Server-with-Access-Control
-A project in CSC-204Operating Systems
+# Multi-Threaded File Server
 
-Before starting client, update the IP address of server in main.c
+A concurrent TCP file server in C, built for CSC-204 Operating Systems at IIT Roorkee. Many clients can read and download the same file at once, while writers get exclusive access. Access is gated by salted SHA-256 authentication and read/write/modify roles.
 
-## To start client: 
+**Highlights**
+- One thread per client (POSIX threads) over TCP sockets
+- Per-file reader-writer locking with semaphores, so readers never block each other and writers never see a half-read file
+- Upload races closed with a double-checked, briefly held directory lock
+- Salted SHA-256 password hashing via OpenSSL, role-based access control, and server-side logging
+- CMake build with one-command launch scripts
 
-chmod +x run_client.sh<br>
-./run_client.sh
+## Quick start
 
-## To start server:
+Requirements: a C compiler, CMake 3.10+, and OpenSSL development headers (`sudo apt-get install build-essential cmake libssl-dev` on Ubuntu/Debian).
 
-chmod +x run_server.sh<br>
-./run_server.sh
+```bash
+# Terminal 1: build and start the server (listens on port 8080)
+chmod +x run_server.sh && ./run_server.sh
+
+# Terminal 2: build and start a client
+chmod +x run_client.sh
+./run_client.sh                 # connects to 127.0.0.1
+./run_client.sh 192.168.1.20    # or pass the server's IP
+SERVER_IP=192.168.1.20 ./run_client.sh   # or set it in the environment
+```
+
+Add users on the server side with `./user_manager -a <username> <password> <role>` (see below).
+
+## Team
+
+Built by Pradyuman Singh Shekhawat with Abdullah Azeem, Rohan Gupta and Whizzion957 (see the commit history).
 
 ## User Authentication System
 
